@@ -1,25 +1,23 @@
-import { readData } from "../../shared.ts";
-import chalk from "chalk";
+import { readData } from '../../shared.ts';
+import chalk from 'chalk';
 
 const dictionary = [
-  { string: "one", number: "1" },
-  { string: "two", number: "2" },
-  { string: "three", number: "3" },
-  { string: "four", number: "4" },
-  { string: "five", number: "5" },
-  { string: "six", number: "6" },
-  { string: "seven", number: "7" },
-  { string: "eight", number: "8" },
-  { string: "nine", number: "9" },
+  { string: 'one', number: '1' },
+  { string: 'two', number: '2' },
+  { string: 'three', number: '3' },
+  { string: 'four', number: '4' },
+  { string: 'five', number: '5' },
+  { string: 'six', number: '6' },
+  { string: 'seven', number: '7' },
+  { string: 'eight', number: '8' },
+  { string: 'nine', number: '9' }
 ];
 
 export async function day1b(dataPath?: string) {
-  const data = await readData(dataPath);
-
+  const data: string[] = await readData(dataPath);
   let value = 0;
 
-  const textValues = JSON.stringify(data).split(",");
-  textValues.forEach(textLine => {
+  data.forEach(textLine => {
     const firstValue = getValue(textLine, true);
     const lastValue = getValue(textLine, false);
     value += parseInt(firstValue + lastValue);
@@ -65,4 +63,4 @@ function getValue(textLine: string, firstValue: boolean) {
 }
 
 const answer = await day1b();
-console.log(chalk.bgGreen("Your Answer:"), chalk.green(answer));
+console.log(chalk.bgGreen('Your Answer:'), chalk.green(answer));
