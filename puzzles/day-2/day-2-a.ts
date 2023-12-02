@@ -7,11 +7,7 @@ export async function day2a(dataPath?: string) {
   const data = await readData(dataPath);
   let value = 0;
 
-  const textValues = JSON.stringify(data)
-    .split(`"`)
-    .filter(text => text.includes("Game"));
-
-  textValues.forEach(textLine => {
+  data.forEach(textLine => {
     const gameValues = textLine.split(":");
     const isPossible = checkPossibility(gameValues[1]);
 
@@ -24,7 +20,6 @@ export async function day2a(dataPath?: string) {
 
 function checkPossibility(cubeString: string): boolean {
   const sets = cubeString.replace(/ /g, "").split(/[;,]/);
-
   return sets.every(evaluateCubes);
 }
 
