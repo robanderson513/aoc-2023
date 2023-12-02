@@ -10,6 +10,7 @@ export async function day1a(dataPath?: string) {
     const numbers = textLine.replace(/[^0-9]/g, "");
     value += parseInt(numbers[0] + numbers[numbers.length - 1]);
   });
+
   return value;
 }
 
