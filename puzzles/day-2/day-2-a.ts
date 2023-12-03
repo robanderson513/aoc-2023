@@ -4,7 +4,7 @@ import chalk from 'chalk';
 const cubeBag = { red: 12, green: 13, blue: 14 };
 
 export async function day2a(dataPath?: string) {
-  const data = await readData(dataPath);
+  const data: string[] = await readData(dataPath);
   let value = 0;
 
   data.forEach(textLine => {
