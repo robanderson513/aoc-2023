@@ -13,7 +13,7 @@ export async function day3a(dataPath?: string) {
 
         const isValid = validatePartNumber(data, index, partIndexes);
         if (isValid) value += parseInt(partNumber);
-
+        //skip to the end of the part number
         i += partNumber.length - 1;
       }
     }
