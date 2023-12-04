@@ -19,96 +19,74 @@ export async function day3b(dataPath?: string) {
   return value;
 }
 
-function findGearValues(gearIndex: number, lineIndex: number, data: string[]): number {
-  let part1: string;
-  let part2: string;
-  const maxIndex = data[lineIndex].length - 1;
-  const startIndex = gearIndex ? gearIndex - 1 : 0;
-  const endIndex = gearIndex < maxIndex ? gearIndex + 1 : maxIndex;
+let part1: string;
+let part2: string;
+let startIndex: number;
+let endIndex: number;
 
-  //previous line
+function findGearValues(gearIndex: number, lineIndex: number, data: string[]): number {
+  const maxIndex = data[lineIndex].length - 1;
+  part1 = part2 = '';
+  startIndex = gearIndex ? gearIndex - 1 : 0;
+  endIndex = gearIndex < maxIndex ? gearIndex + 1 : maxIndex;
+
   if (lineIndex) {
     const previousLine = data[lineIndex - 1];
-    const searchString = previousLine.substring(startIndex, endIndex + 1);
-    if (searchString.match(/\d/)) {
-      //checks for two on the same line, else gets the single value
-      if (
-        previousLine[startIndex].match(/\d/) &&
-        previousLine[gearIndex].match(/[^\d]/) &&
-        previousLine[endIndex].match(/\d/)
-      ) {
-        part1 = getPartNumber(startIndex, previousLine);
-        part2 = getPartNumber(endIndex, previousLine);
-      } else {
-        const partNumber = getPartNumber(gearIndex, previousLine);
-        part1 = partNumber;
-      }
-    }
+    checkAdjacentLines(previousLine, gearIndex, true);
   }
 
   if (data[lineIndex][startIndex].match(/\d/)) {
     const partNumber = getPartNumber(startIndex, data[lineIndex]);
-    if (!part1) {
-      part1 = partNumber;
-    } else if (!part2) {
-      part2 = partNumber;
-    }
+    !part1 ? (part1 = partNumber) : (part2 = partNumber);
   }
 
   if (data[lineIndex][endIndex].match(/\d/)) {
     const partNumber = getPartNumber(endIndex, data[lineIndex]);
-    if (!part1) {
-      part1 = partNumber;
-    } else if (!part2) {
-      part2 = partNumber;
-    }
+    !part1 ? (part1 = partNumber) : (part2 = partNumber);
   }
 
   if (lineIndex + 1 <= maxIndex) {
     const nextLine = data[lineIndex + 1];
-    const searchString = nextLine.substring(startIndex, endIndex + 1);
-    if (searchString.match(/\d/)) {
-      if (
-        nextLine[startIndex].match(/\d/) &&
-        nextLine[gearIndex].match(/[^\d]/) &&
-        nextLine[endIndex].match(/\d/)
-      ) {
-        part1 = getPartNumber(startIndex, nextLine);
-        part2 = getPartNumber(endIndex, nextLine);
-      } else {
-        const partNumber = getPartNumber(gearIndex, nextLine);
-        if (!part2) part2 = partNumber;
-      }
-    }
-  }
-  if (part1 && part2) {
-    console.log(part1, part2);
+    checkAdjacentLines(nextLine, gearIndex, false);
   }
   return part1 && part2 ? parseInt(part1) * parseInt(part2) : null;
 }
 
-function getPartNumber(index: number, lineData: string): string {
-  let partIndex = index;
-  let partNumber = '';
+function checkAdjacentLines(lineData: string, gear: number, previous: boolean): void {
+  if (lineData.substring(startIndex, endIndex + 1).match(/\d/))
+    if (hasDoubleValues(lineData, startIndex, gear, endIndex)) {
+      part1 = getPartNumber(startIndex, lineData);
+      part2 = getPartNumber(endIndex, lineData);
+    } else {
+      previous ? (part1 = getPartNumber(gear, lineData)) : (part2 = getPartNumber(gear, lineData));
+    }
+}
 
+function getPartNumber(index: number, lineData: string): string {
+  let partNumber = '';
   if (lineData[index].match(/\d/)) partNumber = lineData[index];
 
-  let isCreating = true;
-  while (isCreating) {
-    partIndex++;
-    isCreating = !!lineData[partIndex] && !!lineData[partIndex].match(/\d/);
-    if (isCreating) partNumber += lineData[partIndex];
-  }
-  isCreating = true;
-  partIndex = index;
-  while (isCreating) {
-    partIndex--;
-    isCreating = !!lineData[partIndex] && !!lineData[partIndex].match(/\d/);
-    if (isCreating) partNumber = lineData[partIndex] + partNumber;
-  }
+  partNumber += buildPartNumber(index, lineData, true);
+  partNumber = buildPartNumber(index, lineData, false) + partNumber;
 
   return partNumber;
 }
+
+function buildPartNumber(index: number, lineData: string, increment: boolean): string {
+  let partNumber = '';
+  let isCreating = true;
+  while (isCreating) {
+    index += increment ? 1 : -1;
+    isCreating = !!lineData[index] && !!lineData[index].match(/\d/);
+    if (isCreating)
+      increment ? (partNumber += lineData[index]) : (partNumber = lineData[index] + partNumber);
+  }
+  return partNumber;
+}
+
+//Checks for multiple values on a single line separated by another character
+const hasDoubleValues = (line: string, start: number, gear: number, end: number): boolean =>
+  !!line[start].match(/\d/) && !!line[gear].match(/[^\d]/) && !!line[end].match(/\d/);
 
 const answer = await day3b();
 console.log(chalk.bgGreen('Your Answer:'), chalk.green(answer));
