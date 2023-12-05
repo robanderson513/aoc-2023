@@ -15,7 +15,7 @@ export async function day5a(dataPath?: string) {
   const humidityMap = parseMapping(dataMaps[6]);
   const locationMap = parseMapping(dataMaps[7]);
 
-  seeds.forEach((seed, index) => {
+  seeds.forEach(seed => {
     const soilValue = getMappingValue(parseInt(seed), soilMap);
     const fertilizerValue = getMappingValue(soilValue, fertilizerMap);
     const waterValue = getMappingValue(fertilizerValue, waterMap);
@@ -24,7 +24,7 @@ export async function day5a(dataPath?: string) {
     const humidityValue = getMappingValue(tempValue, humidityMap);
     const locationValue = getMappingValue(humidityValue, locationMap);
 
-    if (!index) {
+    if (!value) {
       value = locationValue;
     } else if (locationValue < value) {
       value = locationValue;
